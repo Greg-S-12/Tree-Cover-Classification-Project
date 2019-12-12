@@ -1,0 +1,33 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<Elevation &le; 0.593<br/>gini = 0.623<br/>samples = 435759<br/>value = [158834, 212525, 26845, 2096, 7020, 12994, 15445]<br/>class = 2>, fillcolor="#f1fad9"] ;
+1 [label=<Elevation &le; 0.326<br/>gini = 0.553<br/>samples = 252848<br/>value = [43289, 160544, 26845, 2096, 7020, 12994, 60]<br/>class = 2>, fillcolor="#d7f090"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<Horizontal_Distance_To_Hydrology &le; 0.011<br/>gini = 0.581<br/>samples = 32147<br/>value = [10, 2472, 18478, 2094, 94, 8999, 0]<br/>class = 3>, fillcolor="#aef4b6"] ;
+1 -> 2 ;
+3 [label=<gini = 0.711<br/>samples = 2381<br/>value = [9, 188, 617, 864, 12, 691, 0]<br/>class = 4>, fillcolor="#ebfcfc"] ;
+2 -> 3 ;
+4 [label=<gini = 0.554<br/>samples = 29766<br/>value = [1, 2284, 17861, 1230, 82, 8308, 0]<br/>class = 3>, fillcolor="#a7f3b0"] ;
+2 -> 4 ;
+5 [label=<Soil_Type4 &le; 0.5<br/>gini = 0.446<br/>samples = 220701<br/>value = [43279, 158072, 8367, 2, 6926, 3995, 60]<br/>class = 2>, fillcolor="#d0ee7f"] ;
+1 -> 5 ;
+6 [label=<gini = 0.428<br/>samples = 213923<br/>value = [43137, 155674, 4831, 2, 6510, 3766, 3]<br/>class = 2>, fillcolor="#d0ee7d"] ;
+5 -> 6 ;
+7 [label=<gini = 0.597<br/>samples = 6778<br/>value = [142, 2398, 3536, 0, 416, 229, 57]<br/>class = 3>, fillcolor="#ccf8d1"] ;
+5 -> 7 ;
+8 [label=<Elevation &le; 0.73<br/>gini = 0.513<br/>samples = 182911<br/>value = [115545, 51981, 0, 0, 0, 0, 15385]<br/>class = 1>, fillcolor="#f2c29f"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label=<Hillshade_Noon &le; 0.943<br/>gini = 0.477<br/>samples = 156880<br/>value = [101365, 50726, 0, 0, 0, 0, 4789]<br/>class = 1>, fillcolor="#f3c3a1"] ;
+8 -> 9 ;
+10 [label=<gini = 0.446<br/>samples = 119485<br/>value = [82556, 32895, 0, 0, 0, 0, 4034]<br/>class = 1>, fillcolor="#f0b78d"] ;
+9 -> 10 ;
+11 [label=<gini = 0.519<br/>samples = 37395<br/>value = [18809, 17831, 0, 0, 0, 0, 755]<br/>class = 1>, fillcolor="#fef9f5"] ;
+9 -> 11 ;
+12 [label=<Wilderness_Area3 &le; 0.5<br/>gini = 0.535<br/>samples = 26031<br/>value = [14180, 1255, 0, 0, 0, 0, 10596]<br/>class = 1>, fillcolor="#f9e2d1"] ;
+8 -> 12 ;
+13 [label=<gini = 0.472<br/>samples = 12944<br/>value = [8746, 844, 0, 0, 0, 0, 3354]<br/>class = 1>, fillcolor="#f0b890"] ;
+12 -> 13 ;
+14 [label=<gini = 0.52<br/>samples = 13087<br/>value = [5434, 411, 0, 0, 0, 0, 7242]<br/>class = 7>, fillcolor="#f9d0e2"] ;
+12 -> 14 ;
+}
