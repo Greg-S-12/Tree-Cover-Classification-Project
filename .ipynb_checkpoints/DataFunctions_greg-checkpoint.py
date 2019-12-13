@@ -162,11 +162,6 @@ def roc_auc_score_multiclass(actual_class, pred_class, average = "macro"):
 
     return roc_auc_dict
 
-print("\nLogistic Regression")
-# assuming your already have a list of actual_class and predicted_class from the logistic regression classifier
-lr_roc_auc_multiclass = roc_auc_score_multiclass(actual_class, predicted_class)
-print(lr_roc_auc_multiclass)
-
 
 
 
@@ -260,7 +255,7 @@ def multiclass_classifier(X,y,model,list_of_classes):
     #       .format(macro_roc_auc_ovo, weighted_roc_auc_ovo))
     
             
-    rasm = roc_auc_score_multiclass()
+#     rasm = roc_auc_score_multiclass()
        
             
     
