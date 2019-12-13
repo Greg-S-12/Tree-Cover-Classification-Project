@@ -16,6 +16,7 @@ from scipy import interp
 from sklearn.metrics import classification_report
 from sklearn.preprocessing import LabelBinarizer
 from  sklearn.metrics import precision_recall_fscore_support
+from sklearn.metrics import multilabel_confusion_matrix
 
 
 
@@ -49,118 +50,7 @@ def dummies_back_to_categorical(data,range_of_columns,categorical_column_name):
 
 
 
-def class_report(y_true, y_pred, y_score=None, average='micro'):
-    if y_true.shape != y_pred.shape:
-        print("Error! y_true %s is not the same shape as y_pred %s" % (
-              y_true.shape,
-              y_pred.shape)
-        )
-        return
 
-    lb = LabelBinarizer()
-
-    if len(y_true.shape) == 1:
-        lb.fit(y_true)
-
-    #Value counts of predictions
-    labels, cnt = np.unique(
-        y_pred,
-        return_counts=True)
-    n_classes = len(labels)
-    pred_cnt = pd.Series(cnt, index=labels)
-
-    metrics_summary = precision_recall_fscore_support(
-            y_true=y_true,
-            y_pred=y_pred,
-            labels=labels)
-
-    avg = list(precision_recall_fscore_support(
-            y_true=y_true, 
-            y_pred=y_pred,
-            average='weighted'))
-
-    metrics_sum_index = ['precision', 'recall', 'f1-score', 'support']
-    class_report_df = pd.DataFrame(
-        list(metrics_summary),
-        index=metrics_sum_index,
-        columns=labels)
-
-    support = class_report_df.loc['support']
-    total = support.sum() 
-    class_report_df['avg / total'] = avg[:-1] + [total]
-
-    class_report_df = class_report_df.T
-    class_report_df['pred'] = pred_cnt
-    class_report_df['pred'].iloc[-1] = total
-
-    if not (y_score is None):
-        fpr = dict()
-        tpr = dict()
-        roc_auc = dict()
-        for label_it, label in enumerate(labels):
-            fpr[label], tpr[label], _ = roc_curve(
-                (y_true == label).astype(int), 
-                y_score[:, label_it])
-
-            roc_auc[label] = auc(fpr[label], tpr[label])
-
-        if average == 'micro':
-            if n_classes <= 2:
-                fpr["avg / total"], tpr["avg / total"], _ = roc_curve(
-                    lb.transform(y_true).ravel(), 
-                    y_score[:, 1].ravel())
-            else:
-                fpr["avg / total"], tpr["avg / total"], _ = roc_curve(
-                        lb.transform(y_true).ravel(), 
-                        y_score.ravel())
-
-            roc_auc["avg / total"] = auc(
-                fpr["avg / total"], 
-                tpr["avg / total"])
-
-        elif average == 'macro':
-            # First aggregate all false positive rates
-            all_fpr = np.unique(np.concatenate([
-                fpr[i] for i in labels]
-            ))
-
-            # Then interpolate all ROC curves at this points
-            mean_tpr = np.zeros_like(all_fpr)
-            for i in labels:
-                mean_tpr += interp(all_fpr, fpr[i], tpr[i])
-
-            # Finally average it and compute AUC
-            mean_tpr /= n_classes
-
-            fpr["macro"] = all_fpr
-            tpr["macro"] = mean_tpr
-
-            roc_auc["avg / total"] = auc(fpr["macro"], tpr["macro"])
-
-            class_report_df['AUC'] = pd.Series(roc_auc)
-
-    return class_report_df
-
-
-
-def roc_auc_score_multiclass(actual_class, pred_class, average = "macro"):
-
-    #creating a set of all the unique classes using the actual class list
-    unique_class = set(actual_class)
-    roc_auc_dict = {}
-    for per_class in unique_class:
-        #creating a list of all the classes except the current class 
-        other_class = [x for x in unique_class if x != per_class]
-
-        #marking the current class as 1 and all other classes as 0
-        new_actual_class = [0 if x in other_class else 1 for x in actual_class]
-        new_pred_class = [0 if x in other_class else 1 for x in pred_class]
-
-        #using the sklearn metrics method to calculate the roc_auc_score
-        roc_auc = roc_auc_score(new_actual_class, new_pred_class, average = average)
-        roc_auc_dict[per_class] = roc_auc
-
-    return roc_auc_dict
 
 
 
@@ -254,17 +144,15 @@ def multiclass_classifier(X,y,model,list_of_classes):
     #       "(weighted by prevalence)"
     #       .format(macro_roc_auc_ovo, weighted_roc_auc_ovo))
     
+    y_pred = classifier.predict(X_test)
             
-#     rasm = roc_auc_score_multiclass()
-       
-            
+    mcm = multilabel_confusion_matrix(y_test,y_pred)
+                  
     
     
-    return rasm, print("One-vs-Rest ROC AUC scores:\n{:.6f} (macro),\n{:.6f} "
+    return mcm, print("One-vs-Rest ROC AUC scores:\n{:.6f} (macro),\n{:.6f} "
           "(weighted by prevalence)"
           .format(macro_roc_auc_ovr, weighted_roc_auc_ovr)), figure
-
-
 
 
 
@@ -358,6 +246,10 @@ def multiclass_classifier_decision_tree(X,y,model,list_of_classes):
     #       "(weighted by prevalence)"
     #       .format(macro_roc_auc_ovo, weighted_roc_auc_ovo))
     
-    return print("One-vs-Rest ROC AUC scores:\n{:.6f} (macro),\n{:.6f} "
+    y_pred = classifier.predict(X_test)
+    
+    mcm = multilabel_confusion_matrix(y_test,y_pred)
+    
+    return mcm, print("One-vs-Rest ROC AUC scores:\n{:.6f} (macro),\n{:.6f} "
           "(weighted by prevalence)"
           .format(macro_roc_auc_ovr, weighted_roc_auc_ovr)), figure
